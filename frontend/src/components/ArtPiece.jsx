@@ -1,11 +1,8 @@
 import React from 'react';
+import { getImageUrl } from '../services/api';
 
 const ArtPiece = ({ piece }) => {
-  const imageUrl = piece.image?.url 
-    ? `http://localhost:1337${piece.image.url}`
-    : piece.image?.formats?.medium?.url 
-    ? `http://localhost:1337${piece.image.formats.medium.url}`
-    : null;
+  const imageUrl = getImageUrl(piece.image);
 
   return (
     <div className="art-piece">

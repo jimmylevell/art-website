@@ -1,6 +1,7 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:1337/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:1337';
+const API_URL = `${API_BASE_URL}/api`;
 
 export const fetchArtPieces = async () => {
   try {
@@ -10,6 +11,15 @@ export const fetchArtPieces = async () => {
     console.error('Error fetching art pieces:', error);
     throw error;
   }
+};
+
+export const getImageUrl = (image) => {
+  if (!image) return null;
+  
+  const imageUrl = image.url || image.formats?.medium?.url;
+  if (!imageUrl) return null;
+  
+  return `${API_BASE_URL}${imageUrl}`;
 };
 
 export const groupArtPiecesByCategory = (artPieces) => {
