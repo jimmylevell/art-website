@@ -1,0 +1,34 @@
+{
+  "kind": "collectionType",
+  "collectionName": "art_pieces",
+  "info": {
+    "singularName": "art-piece",
+    "pluralName": "art-pieces",
+    "displayName": "Art Piece",
+    "description": "Art pieces with images, descriptions, and categories"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string",
+      "required": true
+    },
+    "description": {
+      "type": "text",
+      "required": true
+    },
+    "category": {
+      "type": "string",
+      "required": true
+    },
+    "image": {
+      "type": "media",
+      "multiple": false,
+      "required": true,
+      "allowedTypes": ["images"]
+    }
+  }
+}
