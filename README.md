@@ -7,7 +7,9 @@ A full-stack web application for showcasing art pieces, built with React fronten
 - Display art pieces with images, descriptions, and categories
 - Organize art pieces by categories
 - Show the first few pieces from each category on the main page
-- Modern, responsive design
+- Click on any art piece to view it in a full-screen modal viewer
+- Modern, responsive design with Tailwind CSS
+- Built with TypeScript for type safety
 
 ## Tech Stack
 
@@ -15,10 +17,13 @@ A full-stack web application for showcasing art pieces, built with React fronten
 - Strapi v5 (Headless CMS)
 - SQLite database
 - Node.js
+- TypeScript
 
 ### Frontend
 - React 19
+- TypeScript
 - Vite
+- Tailwind CSS v4
 - Axios for API calls
 
 ## Prerequisites
@@ -95,6 +100,7 @@ The React app will be available at `http://localhost:5173`
 2. Add art pieces through the Strapi admin panel
 3. View the art gallery at `http://localhost:5173`
 4. The main page will display all categories with the first 3 pieces from each
+5. Click on any art piece to open the full-screen viewer with image, title, description, and category
 
 ## Project Structure
 
@@ -106,12 +112,16 @@ art-website/
 │   │   └── api/
 │   │       └── art-piece/  # Art piece content type
 │   └── package.json
-├── frontend/             # React frontend
+├── frontend/             # React frontend (TypeScript)
 │   ├── src/
 │   │   ├── components/   # React components
+│   │   │   ├── ArtPiece.tsx
+│   │   │   ├── ArtViewer.tsx
+│   │   │   └── CategorySection.tsx
 │   │   ├── services/     # API services
-│   │   ├── App.jsx       # Main app component
-│   │   └── main.jsx      # Entry point
+│   │   │   └── api.ts
+│   │   ├── App.tsx       # Main app component
+│   │   └── main.tsx      # Entry point
 │   └── package.json
 └── README.md
 ```
