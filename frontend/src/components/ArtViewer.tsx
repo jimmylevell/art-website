@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { ArtPiece, getImageUrl } from '../services/api';
 
 interface ArtViewerProps {
@@ -6,6 +7,19 @@ interface ArtViewerProps {
 }
 
 const ArtViewer = ({ piece, onClose }: ArtViewerProps) => {
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (piece) {
+      document.addEventListener('keydown', handleEscape);
+      return () => document.removeEventListener('keydown', handleEscape);
+    }
+  }, [piece, onClose]);
+
   if (!piece) return null;
 
   const imageUrl = getImageUrl(piece.image);
@@ -45,7 +59,7 @@ const ArtViewer = ({ piece, onClose }: ArtViewerProps) => {
             <div className="w-full bg-gray-100">
               <img
                 src={imageUrl}
-                alt={piece.title || 'Art piece'}
+                alt={`${piece.title || 'Art piece'} - ${piece.category}: ${piece.description.substring(0, 100)}`}
                 className="w-full h-auto object-contain max-h-[60vh]"
               />
             </div>

@@ -24,7 +24,7 @@ const ArtPiece = ({ piece, onClick }: ArtPieceProps) => {
         {piece.title && (
           <h3 className="text-xl font-semibold text-gray-900 mb-2">{piece.title}</h3>
         )}
-        <p className="text-gray-600 line-clamp-3">{piece.description}</p>
+        <p className="text-gray-600 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{piece.description}</p>
       </div>
     </div>
   );
