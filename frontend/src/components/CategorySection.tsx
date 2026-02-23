@@ -5,10 +5,9 @@ interface CategorySectionProps {
   category: string;
   pieces: ArtPieceType[];
   maxPieces?: number;
-  onPieceClick: (piece: ArtPieceType) => void;
 }
 
-const CategorySection = ({ category, pieces, maxPieces = 3, onPieceClick }: CategorySectionProps) => {
+const CategorySection = ({ category, pieces, maxPieces = 3 }: CategorySectionProps) => {
   const displayPieces = pieces.slice(0, maxPieces);
 
   return (
@@ -21,7 +20,6 @@ const CategorySection = ({ category, pieces, maxPieces = 3, onPieceClick }: Cate
           <ArtPiece 
             key={piece.id} 
             piece={piece}
-            onClick={() => onPieceClick(piece)}
           />
         ))}
       </div>
