@@ -52,50 +52,74 @@ const artPieces = [
     description: 'A retro-inspired digital piece combining pixel art aesthetics with cosmic themes.',
     category: 'Digital Art',
   },
+  {
+    title: 'Urban Symphony',
+    description: 'A mixed media piece capturing the vibrant energy and rhythm of city life at night.',
+    category: 'Paintings',
+  },
 ];
 
 // Create placeholder image data
 function createPlaceholderImage(name, colorIndex) {
   const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DFE6E9', '#A29BFE', '#FD79A8', '#FDCB6E'];
   const color = colors[colorIndex % colors.length];
-  
+
   // Create a simple SVG placeholder
   const svg = `<svg width="600" height="400" xmlns="http://www.w3.org/2000/svg">
     <rect width="600" height="400" fill="${color}"/>
     <text x="300" y="200" font-size="40" fill="white" text-anchor="middle">${name}</text>
   </svg>`;
-  
+
   return Buffer.from(svg);
 }
 
 async function seedData() {
   console.log('Starting to seed data...');
-  
+
+  // Authenticate as admin to get JWT token
+  console.log('Authenticating with admin credentials...');
+  let jwtToken;
+  try {
+    const loginResponse = await axios.post(`${ADMIN_URL}/login`, {
+      email: ADMIN_CREDENTIALS.email,
+      password: ADMIN_CREDENTIALS.password,
+    });
+    jwtToken = loginResponse.data.data.token;
+    console.log('✓ Authentication successful\n');
+  } catch (error) {
+    console.error('✗ Authentication failed:', error.response?.data || error.message);
+    console.error('Please make sure the admin user exists with the correct credentials.');
+    return;
+  }
+
+  // Set default authorization header
+  axios.defaults.headers.common['Authorization'] = `Bearer ${jwtToken}`;
+
   for (let i = 0; i < artPieces.length; i++) {
     const piece = artPieces[i];
     console.log(`\nCreating art piece ${i + 1}/${artPieces.length}: ${piece.title}`);
-    
+
     try {
       // Create a placeholder image
       const imageBuffer = createPlaceholderImage(piece.title, i);
       const tempImagePath = path.join(__dirname, `temp-image-${i}.svg`);
       fs.writeFileSync(tempImagePath, imageBuffer);
-      
+
       // Upload the image first
       const formData = new FormData();
       formData.append('files', fs.createReadStream(tempImagePath), {
         filename: `${piece.title.toLowerCase().replace(/\s+/g, '-')}.svg`,
         contentType: 'image/svg+xml',
       });
-      
+
       console.log('  Uploading image...');
       const uploadResponse = await axios.post(`${API_URL}/upload`, formData, {
         headers: formData.getHeaders(),
       });
-      
+
       const imageId = uploadResponse.data[0].id;
       console.log(`  Image uploaded with ID: ${imageId}`);
-      
+
       // Create the art piece entry
       console.log('  Creating art piece entry...');
       const artPieceData = {
@@ -106,10 +130,10 @@ async function seedData() {
           image: imageId,
         },
       };
-      
+
       const createResponse = await axios.post(`${API_URL}/art-pieces`, artPieceData);
       console.log(`  Art piece created with ID: ${createResponse.data.data.id}`);
-      
+
       // Publish the entry
       console.log('  Publishing art piece...');
       await axios.put(`${API_URL}/art-pieces/${createResponse.data.data.id}`, {
@@ -117,16 +141,16 @@ async function seedData() {
           publishedAt: new Date().toISOString(),
         },
       });
-      
+
       console.log(`  ✓ Art piece "${piece.title}" completed`);
-      
+
       // Clean up temp image
       fs.unlinkSync(tempImagePath);
     } catch (error) {
       console.error(`  ✗ Failed to create "${piece.title}":`, error.response?.data || error.message);
     }
   }
-  
+
   console.log('\n✓ Seed data complete!');
 }
 
