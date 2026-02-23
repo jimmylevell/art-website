@@ -1,17 +1,18 @@
+import { Link } from 'react-router-dom';
 import { ArtPiece as ArtPieceType, getImageUrl } from '../services/api';
 
 interface ArtPieceProps {
   piece: ArtPieceType;
-  onClick: () => void;
 }
 
-const ArtPiece = ({ piece, onClick }: ArtPieceProps) => {
+const ArtPiece = ({ piece }: ArtPieceProps) => {
   const imageUrl = getImageUrl(piece.image);
+  const artworkId = piece.documentId || piece.id;
 
   return (
-    <div 
-      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1"
-      onClick={onClick}
+    <Link 
+      to={`/artwork/${artworkId}`}
+      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 block"
     >
       {imageUrl && (
         <img 
@@ -26,7 +27,7 @@ const ArtPiece = ({ piece, onClick }: ArtPieceProps) => {
         )}
         <p className="text-gray-600 overflow-hidden" style={{ display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical' }}>{piece.description}</p>
       </div>
-    </div>
+    </Link>
   );
 };
 
