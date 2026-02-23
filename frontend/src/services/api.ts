@@ -47,6 +47,16 @@ export const fetchArtPieces = async (): Promise<ArtPiecesResponse> => {
   }
 };
 
+export const fetchArtPieceById = async (id: string): Promise<ArtPiece> => {
+  try {
+    const response = await axios.get<{ data: ArtPiece }>(`${API_URL}/art-pieces/${id}?populate=*`);
+    return response.data.data;
+  } catch (error) {
+    console.error('Error fetching art piece:', error);
+    throw error;
+  }
+};
+
 export const getImageUrl = (image?: ArtPieceImage): string | null => {
   if (!image) return null;
   
