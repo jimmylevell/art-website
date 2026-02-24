@@ -1,29 +1,28 @@
 import { useState, useEffect } from 'react';
-import { fetchArtPieces, groupArtPiecesByCategory, ArtPiece } from '../services/api';
-import CategorySection from '../components/CategorySection';
+import { Link } from 'react-router-dom';
+import { fetchCategories, Category, getImageUrl } from '../services/api';
 
 function Home() {
-  const [categorizedArt, setCategorizedArt] = useState<Record<string, ArtPiece[]>>({});
+  const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadArtPieces = async () => {
+    const loadCategories = async () => {
       try {
         setLoading(true);
-        const artPieces = await fetchArtPieces();
-        const grouped = groupArtPiecesByCategory(artPieces);
-        setCategorizedArt(grouped);
+        const categoriesResponse = await fetchCategories();
+        setCategories(categoriesResponse.data);
         setError(null);
       } catch (err) {
-        setError('Failed to load art pieces. Please make sure the Strapi backend is running.');
+        setError('Failed to load categories. Please make sure the Strapi backend is running.');
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    loadArtPieces();
+    loadCategories();
   }, []);
 
   if (loading) {
@@ -50,8 +49,6 @@ function Home() {
     );
   }
 
-  const categories = Object.keys(categorizedArt);
-
   if (categories.length === 0) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
@@ -59,7 +56,7 @@ function Home() {
           <svg className="w-16 h-16 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
           </svg>
-          <p className="text-xl text-gray-600">No art pieces found. Please add some art pieces in Strapi admin.</p>
+          <p className="text-xl text-gray-600">No categories found. Please add some categories in Strapi admin.</p>
         </div>
       </div>
     );
@@ -71,16 +68,40 @@ function Home() {
         <h1 className="text-5xl font-bold mb-2">Art Gallery</h1>
         <p className="text-xl opacity-90">Explore our collection of beautiful art pieces</p>
       </header>
-      
+
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-        {categories.map((category) => (
-          <CategorySection
-            key={category}
-            category={category}
-            pieces={categorizedArt[category]}
-            maxPieces={3}
-          />
-        ))}
+        <h2 className="text-3xl font-bold text-gray-800 mb-8">Browse by Category</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {categories.map((category) => {
+            const titleImageUrl = getImageUrl(category.titleImage);
+            return (
+              <Link
+                key={category.id}
+                to={`/category/${category.slug}`}
+                className="group bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 block"
+              >
+                {titleImageUrl && (
+                  <div className="relative overflow-hidden h-64">
+                    <img
+                      src={titleImageUrl}
+                      alt={category.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+                    <h3 className="absolute bottom-4 left-4 right-4 text-3xl font-bold text-white">
+                      {category.name}
+                    </h3>
+                  </div>
+                )}
+                {category.description && (
+                  <div className="p-6">
+                    <p className="text-gray-600 line-clamp-2">{category.description}</p>
+                  </div>
+                )}
+              </Link>
+            );
+          })}
+        </div>
       </main>
     </div>
   );

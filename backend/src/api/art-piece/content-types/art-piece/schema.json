@@ -21,8 +21,10 @@
       "required": true
     },
     "category": {
-      "type": "string",
-      "required": true
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::category.category",
+      "inversedBy": "art_pieces"
     },
     "image": {
       "type": "media",

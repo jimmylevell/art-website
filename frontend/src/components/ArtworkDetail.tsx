@@ -88,7 +88,7 @@ const ArtworkDetail = () => {
             <div className="w-full bg-gray-100">
               <img
                 src={imageUrl}
-                alt={`${piece.title || 'Art piece'} - ${piece.category}`}
+                alt={`${piece.title || 'Art piece'} - ${piece.category?.name || 'Uncategorized'}`}
                 className="w-full h-auto object-contain max-h-[70vh] mx-auto"
               />
             </div>
@@ -96,9 +96,14 @@ const ArtworkDetail = () => {
 
           <div className="p-8">
             <div className="flex items-center gap-2 mb-6">
-              <span className="inline-block bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-semibold">
-                {piece.category}
-              </span>
+              {piece.category && (
+                <button
+                  onClick={() => navigate(`/category/${piece.category!.slug}`)}
+                  className="inline-block bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-200 transition-colors cursor-pointer"
+                >
+                  {piece.category.name}
+                </button>
+              )}
             </div>
 
             <h2 className="text-3xl font-bold text-gray-900 mb-4">About this piece</h2>
@@ -116,9 +121,9 @@ const ArtworkDetail = () => {
               </div>
             )}
           </div>
-        </div>
-      </main>
-    </div>
+        </div >
+      </main >
+    </div >
   );
 };
 
