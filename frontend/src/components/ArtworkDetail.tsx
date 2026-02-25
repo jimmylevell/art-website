@@ -35,10 +35,10 @@ const ArtworkDetail = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-indigo-600 mx-auto mb-4"></div>
-          <p className="text-xl text-indigo-600 font-semibold">Loading artwork...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border border-neutral-300 border-t-neutral-800 mx-auto mb-4"></div>
+          <p className="text-sm uppercase tracking-widest text-neutral-400 font-medium">Loading...</p>
         </div>
       </div>
     );
@@ -46,17 +46,14 @@ const ArtworkDetail = () => {
 
   if (error || !piece) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
-        <div className="text-center">
-          <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-          </svg>
-          <p className="text-xl text-red-600 mb-4">{error || 'Art piece not found'}</p>
+      <div className="min-h-screen flex items-center justify-center bg-white px-4">
+        <div className="text-center space-y-6">
+          <p className="text-neutral-500">{error || 'Artwork not found'}</p>
           <button
             onClick={() => navigate('/')}
-            className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+            className="text-sm uppercase tracking-wider text-neutral-800 hover:text-neutral-500 transition-colors font-medium"
           >
-            Back to Gallery
+            Return to Gallery
           </button>
         </div>
       </div>
@@ -66,53 +63,72 @@ const ArtworkDetail = () => {
   const imageUrl = getImageUrl(piece.image);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-8 px-8">
-        <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen bg-white">
+      {/* Navigation Header */}
+      <nav className="border-b border-neutral-200 py-6 px-6">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={() => navigate('/')}
-            className="flex items-center gap-2 text-white hover:text-gray-200 transition-colors mb-4"
+            className="flex items-center gap-2 text-neutral-800 hover:text-neutral-500 transition-colors group"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg className="w-5 h-5 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 19l-7-7 7-7" />
             </svg>
-            Back to Gallery
+            <span className="text-sm uppercase tracking-wider font-medium">Back</span>
           </button>
-          <h1 className="text-4xl font-bold">{piece.title || 'Untitled'}</h1>
-        </div>
-      </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+          {piece.category && (
+            <button
+              onClick={() => navigate(`/category/${piece.category!.slug}`)}
+              className="text-sm uppercase tracking-wider text-neutral-400 hover:text-neutral-800 transition-colors font-medium"
+            >
+              {piece.category.name}
+            </button>
+          )}
+        </div>
+      </nav>
+
+      <main className="max-w-7xl mx-auto px-6 py-12">
+        {/* Artwork Display */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start mb-16">
+          {/* Image Section */}
           {imageUrl && (
-            <div className="w-full bg-gray-100">
+            <div className="bg-neutral-50 aspect-square flex items-center justify-center p-8">
               <img
                 src={imageUrl}
                 alt={`${piece.title || 'Art piece'} - ${piece.category?.name || 'Uncategorized'}`}
-                className="w-full h-auto object-contain max-h-[70vh] mx-auto"
+                className="w-full h-full object-contain"
               />
             </div>
           )}
 
-          <div className="p-8">
-            <div className="flex items-center gap-2 mb-6">
+          {/* Details Section */}
+          <div className="space-y-8 lg:pt-8">
+            <div className="space-y-4">
+              <h1 className="text-4xl md:text-5xl font-light tracking-tight text-neutral-900">
+                {piece.title || 'Untitled'}
+              </h1>
+
               {piece.category && (
-                <button
-                  onClick={() => navigate(`/category/${piece.category!.slug}`)}
-                  className="inline-block bg-indigo-100 text-indigo-800 px-4 py-2 rounded-full text-sm font-semibold hover:bg-indigo-200 transition-colors cursor-pointer"
-                >
+                <p className="text-sm uppercase tracking-widest text-neutral-400 font-medium">
                   {piece.category.name}
-                </button>
+                </p>
               )}
             </div>
 
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">About this piece</h2>
-            <p className="text-gray-700 leading-relaxed text-lg whitespace-pre-wrap">{piece.description}</p>
+            <div className="border-t border-neutral-200 pt-8">
+              <h2 className="text-xs uppercase tracking-widest text-neutral-400 font-medium mb-4">
+                Description
+              </h2>
+              <p className="text-neutral-600 leading-relaxed whitespace-pre-wrap">
+                {piece.description}
+              </p>
+            </div>
 
             {piece.createdAt && (
-              <div className="mt-8 pt-6 border-t border-gray-200">
-                <p className="text-sm text-gray-500">
-                  Added on {new Date(piece.createdAt).toLocaleDateString('en-US', {
+              <div className="border-t border-neutral-200 pt-8">
+                <p className="text-xs uppercase tracking-widest text-neutral-400 font-medium">
+                  Added {new Date(piece.createdAt).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
@@ -121,9 +137,9 @@ const ArtworkDetail = () => {
               </div>
             )}
           </div>
-        </div >
-      </main >
-    </div >
+        </div>
+      </main>
+    </div>
   );
 };
 

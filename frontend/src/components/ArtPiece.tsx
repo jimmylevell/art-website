@@ -12,20 +12,27 @@ const ArtPiece = ({ piece }: ArtPieceProps) => {
   return (
     <Link
       to={`/artwork/${artworkId}`}
-      className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer hover:-translate-y-1 block"
+      className="group block"
     >
       {imageUrl && (
-        <img
-          src={imageUrl}
-          alt={piece.title || 'Art piece'}
-          className="w-full h-64 object-cover"
-        />
+        <div className="relative overflow-hidden bg-neutral-100 mb-4 aspect-[3/4]">
+          <img
+            src={imageUrl}
+            alt={piece.title || 'Art piece'}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
+        </div>
       )}
-      <div className="p-6">
+      <div className="space-y-1">
         {piece.title && (
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">{piece.title}</h3>
+          <h3 className="text-lg font-light text-neutral-900 group-hover:text-neutral-600 transition-colors">
+            {piece.title}
+          </h3>
         )}
-        <p className="text-gray-600 line-clamp-3">{piece.description}</p>
+        <p className="text-sm text-neutral-500 line-clamp-2 leading-relaxed">
+          {piece.description}
+        </p>
       </div>
     </Link>
   );
